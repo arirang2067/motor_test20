@@ -12,7 +12,7 @@ void Text_Input(void)
   int i = 0;
   std::size_t found;
   std::ifstream inFile;
-  inFile.open("/home/ubuntu/catkin_ws/motor_test/motor_input.txt");
+  inFile.open("/home/ubuntu/catkin_ws/motor_test20/motor_input.txt");
   for(std::string line; std::getline(inFile,line);)
   {
       found=line.find("=");
@@ -280,7 +280,7 @@ void Theta_Turn(double Theta, int PWM)
   }
   if(Theta > 0)
   {
-    local_encoder = (Encoder_resolution/360)*(Robot_Round/Wheel_Round)*Theta;
+    local_encoder = (Encoder_resolution/360)*(Robot_round/Wheel_round)*Theta;
     Motor_Controller(1, true, local_PWM);
     Motor_Controller(2, true, local_PWM);
     //Accel_Controller(1, true, local_PWM);
@@ -288,7 +288,7 @@ void Theta_Turn(double Theta, int PWM)
   }
   else
   {
-    local_encoder = -(Encoder_resolution/360)*(Robot_Round/Wheel_Round)*Theta;
+    local_encoder = -(Encoder_resolution/360)*(Robot_round/Wheel_round)*Theta;
     Motor_Controller(1, false, local_PWM);
     Motor_Controller(2, false, local_PWM);
     //Accel_Controller(1, false, local_PWM);
@@ -306,7 +306,7 @@ void Theta_Turn(double Theta, int PWM)
 }
 void Distance_Go(double Distance, int PWM)
 {
-  double local_encoder = (Encoder_resolution*Distance)/Wheel_Round;
+  double local_encoder = (Encoder_resolution*Distance)/Wheel_round;
   int local_PWM = Limit_Function(PWM);
   bool Direction = true;
   if(Distance < 0)
