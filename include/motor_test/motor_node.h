@@ -51,8 +51,9 @@ void Interrupt1A(int pi, unsigned user_gpio, unsigned level, uint32_t tick);
 void Interrupt1B(int pi, unsigned user_gpio, unsigned level, uint32_t tick);
 void Interrupt2A(int pi, unsigned user_gpio, unsigned level, uint32_t tick);
 void Interrupt2B(int pi, unsigned user_gpio, unsigned level, uint32_t tick);
-int motor1_encoder_sum();
-int motor2_encoder_sum();
+int Motor1_Encoder_Sum();
+int Motor2_Encoder_Sum();
+void Init_Encoder(void);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 void Initialize(void);
 

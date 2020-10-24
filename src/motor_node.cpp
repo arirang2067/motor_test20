@@ -12,7 +12,7 @@ void Text_Input(void)
   int i = 0;
   std::size_t found;
   std::ifstream inFile;
-  inFile.open("/home/ubuntu/catkin_ws/motor_test20/motor_input.txt");
+  inFile.open("/home/ubuntu/catkin_ws/src/motor_test20/motor_input.txt");
   for(std::string line; std::getline(inFile,line);)
   {
       found=line.find("=");
@@ -117,15 +117,24 @@ void Interrupt2B(int pi, unsigned user_gpio, unsigned level, uint32_t tick)
   else EncoderCounter2B ++;
   EncoderSpeedCounter2 ++;
 }
-int motor1_encoder_sum()
+int Motor1_Encoder_Sum()
 {
   EncoderCounter1 = EncoderCounter1A + EncoderCounter1B;
   return EncoderCounter1;
 }
-int motor2_encoder_sum()
+int Motor2_Encoder_Sum()
 {
   EncoderCounter2 = EncoderCounter2A + EncoderCounter2B;
   return EncoderCounter2;
+}
+void Init_Encoder(void)
+{
+  EncoderCounter1 = 0;
+  EncoderCounter2 = 0;
+  EncoderCounter1A = 0;
+  EncoderCounter1B = 0;
+  EncoderCounter2A = 0;
+  EncoderCounter2B = 0;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 void Initialize(void)
@@ -140,10 +149,7 @@ void Initialize(void)
   ROS_INFO("Control_cycle %f", Control_cycle);
   ROS_INFO("Acceleration_ratio %d", Acceleration_ratio);
 
-  EncoderCounter1A = 0;
-  EncoderCounter1B = 0;
-  EncoderCounter2A = 0;
-  EncoderCounter2B = 0;
+  Init_Encoder();
   Interrupt_Setting();
 
   switch_direction = true;
@@ -274,10 +280,11 @@ void Theta_Turn(double Theta, int PWM)
   int local_PWM = Limit_Function(PWM);
   if(Theta_Distance_Flag == 1)
   {
-      EncoderCounter1 = 0;
-      EncoderCounter2 = 0;
+      Init_Encoder();
       Theta_Distance_Flag = 2;
   }
+  Motor1_Encoder_Sum();
+  Motor2_Encoder_Sum();
   if(Theta > 0)
   {
     local_encoder = (Encoder_resolution/360)*(Robot_round/Wheel_round)*Theta;
@@ -297,8 +304,7 @@ void Theta_Turn(double Theta, int PWM)
 
   if(EncoderCounter1 > local_encoder)
   {
-    EncoderCounter1 = 0;
-    EncoderCounter2 = 0;
+    Init_Encoder();
     Motor_Controller(1, true, 0);
     Motor_Controller(2, true, 0);
     Theta_Distance_Flag = 3;
@@ -316,11 +322,11 @@ void Distance_Go(double Distance, int PWM)
   }
   if(Theta_Distance_Flag == 3)
   {
-      EncoderCounter1 = 0;
-      EncoderCounter2 = 0;
+      Init_Encoder();
       Theta_Distance_Flag = 4;
   }
-
+  Motor1_Encoder_Sum();
+  Motor2_Encoder_Sum();
   if(EncoderCounter1 < local_encoder)
   {
     if(Direction==true)
@@ -340,8 +346,7 @@ void Distance_Go(double Distance, int PWM)
   }
   else
   {
-    EncoderCounter1 = 0;
-    EncoderCounter2 = 0;
+    Init_Encoder();
     Motor_Controller(1, true, 0);
     Motor_Controller(2, true, 0);
     //Accel_Controller(1, true, 0);
