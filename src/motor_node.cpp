@@ -46,34 +46,27 @@ int Motor_Setup(void)
 
   set_mode(pinum, motor1_DIR, PI_OUTPUT);
   set_mode(pinum, motor2_DIR, PI_OUTPUT);
-
   set_mode(pinum, motor1_PWM, PI_OUTPUT);
   set_mode(pinum, motor2_PWM, PI_OUTPUT);
-
   set_mode(pinum, motor1_ENA, PI_INPUT);
   set_mode(pinum, motor1_ENB, PI_INPUT);
-
   set_mode(pinum, motor2_ENA, PI_INPUT);
   set_mode(pinum, motor2_ENB, PI_INPUT);
-
-  set_PWM_range(pinum, motor1_PWM, PWM_range);
-  set_PWM_range(pinum, motor2_PWM, PWM_range);
-  
-  set_PWM_frequency(pinum, motor1_PWM, PWM_frequency);
-  set_PWM_frequency(pinum, motor2_PWM, PWM_frequency);
-  
-  set_pull_up_down(pinum, motor1_ENA, PI_PUD_DOWN);
-  set_pull_up_down(pinum, motor1_ENB, PI_PUD_DOWN);
-  set_pull_up_down(pinum, motor2_ENA, PI_PUD_DOWN);
-  set_pull_up_down(pinum, motor2_ENB, PI_PUD_DOWN);
-  //set_pull_up_down(pinum, motor2_ENA, PI_PUD_OFF);
-  //set_pull_up_down(pinum, motor2_ENB, PI_PUD_OFF);
 
   gpio_write(pinum, motor1_DIR, PI_LOW);
   gpio_write(pinum, motor2_DIR, PI_LOW);
 
+  set_PWM_range(pinum, motor1_PWM, PWM_range);
+  set_PWM_range(pinum, motor2_PWM, PWM_range);
+  set_PWM_frequency(pinum, motor1_PWM, PWM_frequency);
+  set_PWM_frequency(pinum, motor2_PWM, PWM_frequency);
   set_PWM_dutycycle(pinum, motor1_PWM, 0);
   set_PWM_dutycycle(pinum, motor1_PWM, 0);
+
+  set_pull_up_down(pinum, motor1_ENA, PI_PUD_DOWN);
+  set_pull_up_down(pinum, motor1_ENB, PI_PUD_DOWN);
+  set_pull_up_down(pinum, motor2_ENA, PI_PUD_DOWN);
+  set_pull_up_down(pinum, motor2_ENB, PI_PUD_DOWN);
 
   current_PWM1 = 0;
   current_PWM2 = 0;
@@ -140,21 +133,21 @@ void Init_Encoder(void)
 void Initialize(void)
 {
   Text_Input();
+  Motor_Setup();
+  Init_Encoder();
+  Interrupt_Setting();
+
   Wheel_round = 2*PI*Wheel_radius;
   Robot_round = 2*PI*Robot_radius;
-  Motor_Setup();
+
+  switch_direction = true;
+  Theta_Distance_Flag = 0;
+
   ROS_INFO("PWM_range %d", PWM_range);
   ROS_INFO("PWM_frequency %d", PWM_frequency);
   ROS_INFO("PWM_limit %d", PWM_limit);
   ROS_INFO("Control_cycle %f", Control_cycle);
   ROS_INFO("Acceleration_ratio %d", Acceleration_ratio);
-
-  Init_Encoder();
-  Interrupt_Setting();
-
-  switch_direction = true;
-  Theta_Distance_Flag = 0;
-
   ROS_INFO("Initialize Complete");
 
   printf("\033[2J");  
@@ -287,7 +280,7 @@ void Theta_Turn(double Theta, int PWM)
   Motor2_Encoder_Sum();
   if(Theta > 0)
   {
-    local_encoder = (Encoder_resolution/360)*(Robot_round/Wheel_round)*Theta;
+    local_encoder = (Encoder_resolution*4/360)*(Robot_round/Wheel_round)*Theta;
     Motor_Controller(1, true, local_PWM);
     Motor_Controller(2, true, local_PWM);
     //Accel_Controller(1, true, local_PWM);
@@ -295,7 +288,7 @@ void Theta_Turn(double Theta, int PWM)
   }
   else
   {
-    local_encoder = -(Encoder_resolution/360)*(Robot_round/Wheel_round)*Theta;
+    local_encoder = -(Encoder_resolution*4/360)*(Robot_round/Wheel_round)*Theta;
     Motor_Controller(1, false, local_PWM);
     Motor_Controller(2, false, local_PWM);
     //Accel_Controller(1, false, local_PWM);
@@ -312,7 +305,7 @@ void Theta_Turn(double Theta, int PWM)
 }
 void Distance_Go(double Distance, int PWM)
 {
-  double local_encoder = (Encoder_resolution*Distance)/Wheel_round;
+  double local_encoder = (Encoder_resolution*4*Distance)/Wheel_round;
   int local_PWM = Limit_Function(PWM);
   bool Direction = true;
   if(Distance < 0)
@@ -413,7 +406,7 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "motor_node");
   ros::NodeHandle nh;
   Initialize();
- ros::Rate loop_rate(10);
+ ros::Rate loop_rate(Control_cycle);
 
   while(ros::ok())
   {

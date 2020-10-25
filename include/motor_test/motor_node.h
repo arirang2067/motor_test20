@@ -14,8 +14,6 @@
 
 #define PI 3.141592
 
-using namespace std;
-
 //Text_Input
 void Text_Input(void);
 int PWM_range;
@@ -28,6 +26,7 @@ double Robot_radius;
 int Encoder_resolution;
 double Wheel_round;
 double Robot_round;
+
 //Motor_Setup
 int Motor_Setup(void);
 int pinum;
