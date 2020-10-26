@@ -88,25 +88,25 @@ void Interrupt_Setting(void)
 }
 void Interrupt1A(int pi, unsigned user_gpio, unsigned level, uint32_t tick)
 {
-  if(gpio_read(pinum, motor1_DIR) == false)EncoderCounter1A ++;
+  if(gpio_read(pinum, motor1_DIR) == true)EncoderCounter1A ++;
   else EncoderCounter1A --;
   EncoderSpeedCounter1 ++;
 }
 void Interrupt1B(int pi, unsigned user_gpio, unsigned level, uint32_t tick)
 {
-  if(gpio_read(pinum, motor1_DIR) == false)EncoderCounter1B ++;
+  if(gpio_read(pinum, motor1_DIR) == true)EncoderCounter1B ++;
   else EncoderCounter1B --;
   EncoderSpeedCounter1 ++;
 }
 void Interrupt2A(int pi, unsigned user_gpio, unsigned level, uint32_t tick)
 {
-  if(gpio_read(pinum, motor2_DIR) == false)EncoderCounter2A --;
+  if(gpio_read(pinum, motor2_DIR) == true)EncoderCounter2A --;
   else EncoderCounter2A ++;
   EncoderSpeedCounter2 ++;
 }
 void Interrupt2B(int pi, unsigned user_gpio, unsigned level, uint32_t tick)
 {
-  if(gpio_read(pinum, motor2_DIR) == false)EncoderCounter2B --;
+  if(gpio_read(pinum, motor2_DIR) == true)EncoderCounter2B --;
   else EncoderCounter2B ++;
   EncoderSpeedCounter2 ++;
 }
@@ -324,17 +324,17 @@ void Distance_Go(double Distance, int PWM)
   {
     if(Direction==true)
     {
-      Motor_Controller(1, true, local_PWM);
-      Motor_Controller(2, false, local_PWM);
-      //Accel_Controller(1, true, local_PWM);
-      //Accel_Controller(2, false, local_PWM);
-    }
-    else
-    {
       Motor_Controller(1, false, local_PWM);
       Motor_Controller(2, true, local_PWM);
       //Accel_Controller(1, false, local_PWM);
       //Accel_Controller(2, true, local_PWM);
+    }
+    else
+    {
+      Motor_Controller(1, true, local_PWM);
+      Motor_Controller(2, false, local_PWM);
+      //Accel_Controller(1, true, local_PWM);
+      //Accel_Controller(2, false, local_PWM);
     }
   }
   else
