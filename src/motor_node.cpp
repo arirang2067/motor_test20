@@ -310,7 +310,7 @@ void Distance_Go(double Distance, int PWM)
   bool Direction = true;
   if(Distance < 0)
   {
-    Direction = 0;
+    Direction = false;
     local_encoder = -local_encoder;
   }
   if(Theta_Distance_Flag == 3)
