@@ -281,18 +281,18 @@ void Theta_Turn(double Theta, int PWM)
   if(Theta > 0)
   {
     local_encoder = (Encoder_resolution*4/360)*(Robot_round/Wheel_round)*Theta;
-    Motor_Controller(1, true, local_PWM);
-    Motor_Controller(2, true, local_PWM);
-    //Accel_Controller(1, true, local_PWM);
-    //Accel_Controller(2, true, local_PWM);
-  }
-  else
-  {
-    local_encoder = -(Encoder_resolution*4/360)*(Robot_round/Wheel_round)*Theta;
     Motor_Controller(1, false, local_PWM);
     Motor_Controller(2, false, local_PWM);
     //Accel_Controller(1, false, local_PWM);
     //Accel_Controller(2, false, local_PWM);
+  }
+  else
+  {
+    local_encoder = -(Encoder_resolution*4/360)*(Robot_round/Wheel_round)*Theta;
+    Motor_Controller(1, true, local_PWM);
+    Motor_Controller(2, true, local_PWM);
+    //Accel_Controller(1, true, local_PWM);
+    //Accel_Controller(2, true, local_PWM);
   }
 
   if(EncoderCounter1 > local_encoder)
