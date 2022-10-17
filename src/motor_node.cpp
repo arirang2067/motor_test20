@@ -36,7 +36,7 @@ void Text_Input(void)
 int Motor_Setup(void)
 {
   pinum=pigpio_start(NULL, NULL);
-  
+
   if(pinum<0)
   {
     ROS_INFO("Setup failed");
@@ -129,7 +129,7 @@ void Init_Encoder(void)
   EncoderCounter2A = 0;
   EncoderCounter2B = 0;
 }
-////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Initialize(void)
 {
   Text_Input();
@@ -150,7 +150,7 @@ void Initialize(void)
   ROS_INFO("Acceleration_ratio %d", Acceleration_ratio);
   ROS_INFO("Initialize Complete");
 
-  printf("\033[2J");  
+  printf("\033[2J");
 }
 
 void Motor_Controller(int motor_num, bool direction, int pwm)
@@ -174,7 +174,7 @@ void Motor_Controller(int motor_num, bool direction, int pwm)
       current_Direction1 = false;
     }
   }
-  
+
   else if(motor_num == 2)
   {
    if(direction == true)
@@ -378,7 +378,7 @@ int Limit_Function(int pwm)
     ROS_WARN("trash value!!!");
   }
   else output = pwm;
-  return output; 
+  return output;
 }
 void RPM_Calculator()
 {
